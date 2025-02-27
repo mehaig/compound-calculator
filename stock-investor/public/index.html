@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compound Investment Calculator</title>
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="2f7569d1-5278-4091-b4df-d061355227fa"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --accent-color: #3a0ca3;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        background-color: var(--light-bg);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .calculator-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+      }
+
+      .card-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1.5rem;
+        border-bottom: 0;
+      }
+
+      .form-label {
+        font-weight: 500;
+        margin-top: 1rem;
+        color: #495057;
+      }
+
+      .input-group {
+        margin-bottom: 1.25rem;
+      }
+
+      .input-group-text {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      }
+
+      .button-calculate {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .button-calculate:hover {
+        background-color: #2f4ccc;
+        transform: translateY(-2px);
+      }
+
+      .result-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        display: none;
+      }
+
+      .result-card.show {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      .result-title {
+        color: #495057;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .result-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .result-value.contributed {
+        color: #2b9348;
+      }
+
+      .result-value.interest {
+        color: #e63946;
+      }
+
+      .accordion {
+        margin-top: 2rem;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+
+      .accordion-button:not(.collapsed) {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      }
+
+      .tooltip-icon {
+        color: var(--primary-color);
+        cursor: pointer;
+        margin-left: 0.5rem;
+      }
+
+      .version-info {
+        background-color: #6c757d;
+        border: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card calculator-card">
+            <div class="card-header">
+              <h2 class="mb-0 d-flex align-items-center">
+                <i class="bi bi-graph-up-arrow me-2"></i>
+                Compound Investment Calculator
+              </h2>
+              <p class="text-white-50 mb-0 mt-2">
+                See how your investments grow over time with the power of
+                compound interest
+              </p>
+            </div>
+            <div class="card-body p-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <label
+                    for="initial"
+                    class="form-label d-flex align-items-center"
+                  >
+                    Initial Investment
+                    <i
+                      class="bi bi-info-circle tooltip-icon"
+                      data-bs-toggle="tooltip"
+                      title="The amount you start with"
+                    ></i>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">£</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="initial"
+                      placeholder="0.00"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="monthly"
+                    class="form-label d-flex align-items-center"
+                  >
+                    Monthly Contribution
+                    <i
+                      class="bi bi-info-circle tooltip-icon"
+                      data-bs-toggle="tooltip"
+                      title="Amount you'll add each month"
+                    ></i>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">£</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="monthly"
+                      placeholder="0.00"
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <label
+                    for="returnRate"
+                    class="form-label d-flex align-items-center"
+                  >
+                    Annual Return Rate
+                    <i
+                      class="bi bi-info-circle tooltip-icon"
+                      data-bs-toggle="tooltip"
+                      title="Expected yearly return percentage"
+                    ></i>
+                  </label>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="returnRate"
+                      placeholder="0.00"
+                      min="0"
+                      max="100"
+                    />
+                    <span class="input-group-text">%</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label
+                    for="years"
+                    class="form-label d-flex align-items-center"
+                  >
+                    Years Invested
+                    <i
+                      class="bi bi-info-circle tooltip-icon"
+                      data-bs-toggle="tooltip"
+                      title="How long you'll keep investing"
+                    ></i>
+                  </label>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="years"
+                      placeholder="0"
+                      min="1"
+                      max="100"
+                    />
+                    <span class="input-group-text">years</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-12">
+                  <button
+                    data-umami-event="Calculate Button"
+                    class="button-calculate"
+                    onclick="calculateInvestment()"
+                  >
+                    Calculate Results <i class="bi bi-calculator ms-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Card -->
+          <div id="resultsCard" class="result-card">
+            <h3 class="mb-4">Investment Projection</h3>
+
+            <div class="row">
+              <div class="col-md-4">
+                <p class="result-title">You Contributed</p>
+                <p class="result-value contributed" id="contributed">£0.00</p>
+              </div>
+              <div class="col-md-4">
+                <p class="result-title">Interest Gained</p>
+                <p class="result-value interest" id="interestAccured">£0.00</p>
+              </div>
+              <div class="col-md-4">
+                <p class="result-title">Final Value</p>
+                <p class="result-value" id="total">£0.00</p>
+              </div>
+            </div>
+
+            <!-- Progress bar showing proportion of contribution vs interest -->
+            <div class="mt-4">
+              <p class="mb-2 small text-muted">
+                Contribution vs Interest Breakdown
+              </p>
+              <div class="progress" style="height: 25px">
+                <div
+                  id="contributionBar"
+                  class="progress-bar bg-success"
+                  role="progressbar"
+                  style="width: 50%"
+                  aria-valuenow="50"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  Contributions
+                </div>
+                <div
+                  id="interestBar"
+                  class="progress-bar bg-danger"
+                  role="progressbar"
+                  style="width: 50%"
+                  aria-valuenow="50"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  Interest
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Accordion -->
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+                  aria-expanded="false"
+                  aria-controls="collapseOne"
+                >
+                  <i class="bi bi-question-circle me-2"></i> What is Compounding
+                  & How Does It Work?
+                </button>
+              </h2>
+              <div
+                id="collapseOne"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingOne"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  <p>
+                    Compounding is the process where your investments generate
+                    earnings, and those earnings are reinvested to generate more
+                    earnings over time. This cycle continues, leading to
+                    exponential growth in wealth.
+                  </p>
+                  <p class="mb-0">
+                    For example, if you invest £1,000 with a 10% annual return,
+                    you'll earn £100 in the first year. In the second year, you
+                    earn 10% on £1,100, which is £110, and so on. This effect is
+                    even more powerful with regular contributions and over
+                    longer time periods.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo"
+                  aria-expanded="false"
+                  aria-controls="collapseTwo"
+                >
+                  <i class="bi bi-graph-up me-2"></i> Why Should You Consider
+                  Investing?
+                </button>
+              </h2>
+              <div
+                id="collapseTwo"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingTwo"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  <p>
+                    Investing allows individuals to potentially grow their
+                    wealth over time, combat inflation, and achieve financial
+                    goals. By leveraging the power of compound interest, even
+                    small contributions can accumulate into significant amounts
+                    over the years.
+                  </p>
+                  <p class="mb-0">
+                    Cash in savings accounts typically loses value over time due
+                    to inflation. Investing gives your money the potential to
+                    grow faster than inflation and build wealth for your future.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseThree"
+                  aria-expanded="false"
+                  aria-controls="collapseThree"
+                >
+                  <i class="bi bi-calculator me-2"></i> How to Use This Compound
+                  Interest Calculator?
+                </button>
+              </h2>
+              <div
+                id="collapseThree"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingThree"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  <ol>
+                    <li>
+                      <strong>Initial Investment:</strong> Enter the amount
+                      you're starting with
+                    </li>
+                    <li>
+                      <strong>Monthly Contribution:</strong> Enter how much
+                      you'll add each month
+                    </li>
+                    <li>
+                      <strong>Annual Return Rate:</strong> Enter your expected
+                      yearly return percentage
+                    </li>
+                    <li>
+                      <strong>Years Invested:</strong> Enter how long you plan
+                      to keep investing
+                    </li>
+                    <li>
+                      <strong>Calculate:</strong> Click the calculate button to
+                      see your results
+                    </li>
+                  </ol>
+                  <p class="mb-0 text-muted">
+                    Note: This calculator assumes returns are compounded monthly
+                    and contributions are made at the beginning of each month.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version info button -->
+          <div class="text-center mt-4">
+            <button
+              type="button"
+              class="button-calculate w-50 w-sm-25"
+              data-bs-toggle="modal"
+              data-bs-target="#versionModal"
+            >
+              <i class="bi bi-info-circle"></i> Updates
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature updates modal -->
+    <div
+      class="modal fade"
+      id="versionModal"
+      tabindex="-1"
+      aria-labelledby="versionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="versionModalLabel">Version History</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ul class="list-group">
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+                <div>
+                  <h6 class="mb-1">v0.3</h6>
+                  <p class="mb-0 text-muted small">
+                    Redesigned UI with improved visuals and user experience
+                  </p>
+                </div>
+                <span class="badge bg-success ms-2">Latest</span>
+              </li>
+              <li class="list-group-item">
+                <h6 class="mb-1">v0.2</h6>
+                <p class="mb-0 text-muted small">
+                  Added breakdown of interest gained, and amount contributed.
+                  Along side the FAQ section.
+                </p>
+              </li>
+              <li class="list-group-item">
+                <h6 class="mb-1">v0.1</h6>
+                <p class="mb-0 text-muted small">
+                  Initial release of the calculator
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Initialize tooltips
+      document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+      });
+
+      function calculateInvestment() {
+        let initial = parseFloat(document.getElementById("initial").value) || 0;
+        let monthly = parseFloat(document.getElementById("monthly").value) || 0;
+        let returnRate =
+          parseFloat(document.getElementById("returnRate").value) || 0;
+        let years = parseFloat(document.getElementById("years").value) || 0;
+
+        // Validation
+        if (returnRate < 0) returnRate = 0;
+        if (returnRate > 100) returnRate = 100;
+        if (years < 0) years = 0;
+        if (initial < 0) initial = 0;
+        if (monthly < 0) monthly = 0;
+
+        let monthlyRate = returnRate / 100 / 12;
+        let months = years * 12;
+        let valueContributed = months * monthly + initial;
+
+        let futureValue = initial * Math.pow(1 + monthlyRate, months);
+
+        // Handle division by zero when monthly rate is 0
+        if (monthlyRate > 0) {
+          futureValue +=
+            (monthly * (Math.pow(1 + monthlyRate, months) - 1)) / monthlyRate;
+        } else {
+          futureValue += monthly * months;
+        }
+
+        let interestAccrued = futureValue - valueContributed;
+
+        // Format numbers with commas
+        function formatCurrency(amount) {
+          return new Intl.NumberFormat("en-GB", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(amount);
+        }
+
+        // Update UI elements
+        document.getElementById("contributed").textContent = `£${formatCurrency(
+          valueContributed
+        )}`;
+        document.getElementById(
+          "interestAccured"
+        ).textContent = `£${formatCurrency(interestAccrued)}`;
+        document.getElementById("total").textContent = `£${formatCurrency(
+          futureValue
+        )}`;
+
+        // Show results card
+        document.getElementById("resultsCard").classList.add("show");
+
+        // Update progress bar
+        const totalValue = valueContributed + interestAccrued;
+        const contributionPercent = (valueContributed / totalValue) * 100;
+        const interestPercent = (interestAccrued / totalValue) * 100;
+
+        document.getElementById("contributionBar").style.width =
+          contributionPercent + "%";
+        document.getElementById("contributionBar").textContent =
+          Math.round(contributionPercent) + "%";
+        document.getElementById("interestBar").style.width =
+          interestPercent + "%";
+        document.getElementById("interestBar").textContent =
+          Math.round(interestPercent) + "%";
+      }
+    </script>
+  </body>
+</html>
